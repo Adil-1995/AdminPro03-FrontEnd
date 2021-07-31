@@ -6,17 +6,20 @@ import { ChartsModule } from 'ng2-charts';
 
 import { IncrementadorComponent } from './incrementador/incrementador.component';
 import { DonaComponent } from './dona/dona.component';
+import { ModelImageComponent } from './model-image/model-image.component';
 
 
 
 @NgModule({
   declarations: [
     IncrementadorComponent,
-    DonaComponent
+    DonaComponent,
+    ModelImageComponent
   ],
   exports: [
     IncrementadorComponent,
-    DonaComponent
+    DonaComponent,
+    ModelImageComponent
   ],
   imports: [
     CommonModule,
