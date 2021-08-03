@@ -1,3 +1,4 @@
+import { HospitalesComponent } from './mantenimientos/hospitales/hospitales.component';
 import { Routes, RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 
@@ -14,6 +15,8 @@ import { PerfilComponent } from './perfil/perfil.component';
 
 //Matenimientos
 import { UsuariosComponent } from './mantenimientos/usuarios/usuarios.component';
+import { MedicosComponent } from './mantenimientos/medicos/medicos.component';
+import { MedicoComponent } from './mantenimientos/medicos/medico.component';
 
 
 
@@ -31,7 +34,10 @@ const routes: Routes = [
             { path: 'rxjs', component: RxjsComponent, data: { titulo: 'RxJs' }},
             { path: 'perfil', component: PerfilComponent, data: { titulo: 'Perfil de usuario' }},
             //Matenimientos
-            { path: 'usuarios', component: UsuariosComponent, data: { titulo: 'Usuarios de applicacion' }},
+            { path: 'usuarios', component: UsuariosComponent, data: { titulo: 'Matenimiento de Usuarios' }},
+            { path: 'hospitales', component: HospitalesComponent, data: { titulo: 'Matenimiento de Hospitales' }},
+            { path: 'medicos', component: MedicosComponent, data: { titulo: 'Matenimiento de Médicos ' }},
+            { path: 'medico/:id', component: MedicoComponent, data: { titulo: 'Matenimiento de Médicos ' }},
 
         ]
     },
