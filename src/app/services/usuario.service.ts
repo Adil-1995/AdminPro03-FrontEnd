@@ -12,7 +12,6 @@ import { LoginForm } from '../interfaces/login-form.interface';
 
 import { Usuario } from '../models/usuario.model';
 
-
 const base_url = environment.base_url;
 
 declare const gapi: any;
@@ -47,6 +46,9 @@ export class UsuarioService {
       },
     };
   }
+  get role(): 'ADMIN_ROLE' | 'USER_ROLE' {
+    return this.usuario.role;
+  }
 
   googleInit() {
     return new Promise<void>((resolve) => {
@@ -62,8 +64,15 @@ export class UsuarioService {
     });
   }
 
+  guardarStorage(token: string, menu: any) {
+    localStorage.setItem('token', token);
+    localStorage.setItem('menu', JSON.stringify(menu));
+  }
+
   logout() {
     localStorage.removeItem('token');
+    //Borrar menu
+    localStorage.removeItem('menu');
 
     this.auth2.signOut().then(() => {
       this.ngZone.run(() => {
@@ -83,7 +92,7 @@ export class UsuarioService {
         map((resp: any) => {
           const { email, google, nombre, role, img = '', uid } = resp.usuario;
           this.usuario = new Usuario(nombre, email, '', img, google, role, uid);
-          localStorage.setItem('token', resp.token);
+          this.guardarStorage(resp.token, resp.menu);
           return true;
         }),
         catchError((error) => of(false))
@@ -93,25 +102,28 @@ export class UsuarioService {
   crearUsuario(formData: RegisterForm) {
     return this.http.post(`${base_url}/usuarios`, formData).pipe(
       tap((resp: any) => {
-        localStorage.setItem('token', resp.token);
+        this.guardarStorage(resp.token, resp.menu);
       })
     );
   }
 
   actualizarPerfil(data: { email: string; nombre: string; role: string }) {
-
-    data={
+    data = {
       ...data,
-      role: this.usuario.role
-    }
+      role: this.usuario.role,
+    };
 
-    return this.http.put(`${base_url}/usuarios/${this.uid}`, data, this.headers);
+    return this.http.put(
+      `${base_url}/usuarios/${this.uid}`,
+      data,
+      this.headers
+    );
   }
 
   login(formData: LoginForm) {
     return this.http.post(`${base_url}/login`, formData).pipe(
       tap((resp: any) => {
-        localStorage.setItem('token', resp.token);
+        this.guardarStorage(resp.token, resp.menu);
       })
     );
   }
@@ -119,7 +131,7 @@ export class UsuarioService {
   loginGoogle(token) {
     return this.http.post(`${base_url}/login/google`, { token }).pipe(
       tap((resp: any) => {
-        localStorage.setItem('token', resp.token);
+        this.guardarStorage(resp.token, resp.menu);
       })
     );
   }
@@ -151,17 +163,16 @@ export class UsuarioService {
     );
   }
 
-  eliminarUsuario(usuario: Usuario){
-  const url = `${base_url}/usuarios/${usuario.uid}`;
-    return this.http.delete(url, this.headers)
-
+  eliminarUsuario(usuario: Usuario) {
+    const url = `${base_url}/usuarios/${usuario.uid}`;
+    return this.http.delete(url, this.headers);
   }
 
   guardarUsuario(usuario: Usuario) {
-
-    return this.http.put(`${base_url}/usuarios/${usuario.uid}`, usuario, this.headers);
+    return this.http.put(
+      `${base_url}/usuarios/${usuario.uid}`,
+      usuario,
+      this.headers
+    );
   }
-
-
-
 }
